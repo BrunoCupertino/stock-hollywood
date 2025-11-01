@@ -2,9 +2,12 @@ syntax = "proto3";
 package internal;
 option go_package = "github.com/BrunoCupertino/stock-hollywood/internal";
 
+import "google/protobuf/timestamp.proto";
+
 message Quote {
     string ticker = 1;
     double px = 2;
+    google.protobuf.Timestamp date = 3;
 }
 
 message QuoteSubscriptionRequest {

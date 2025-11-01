@@ -20,6 +20,11 @@ type OnQuote struct {
 	Ticker string
 	Px     float64
 	Date   time.Time
+	PID    *actor.PID
+}
+
+type Snapshot struct {
+	pid *actor.PID
 }
 
 func (a *QuoteActor) Receive(ctx *actor.Context) {
@@ -41,6 +46,13 @@ func (a *QuoteActor) Receive(ctx *actor.Context) {
 
 	case *Subscription:
 		a.subscribers[ctx.Sender()] = struct{}{}
+	case *Snapshot:
+		ctx.Send(ctx.Sender(), &OnQuote{
+			Ticker: a.ticker,
+			Px:     a.px,
+			Date:   a.updatedAt,
+			PID:    msg.pid,
+		})
 	case *OnQuote:
 		if msg.Date.Before(a.updatedAt) {
 			return
@@ -49,9 +61,11 @@ func (a *QuoteActor) Receive(ctx *actor.Context) {
 		a.px = msg.Px
 		a.updatedAt = msg.Date
 
+		// now := time.Now()
 		for s := range a.subscribers {
 			ctx.Forward(s)
 		}
+		// slog.Info("forward quote time", "duration", time.Since(now))
 	}
 }
 

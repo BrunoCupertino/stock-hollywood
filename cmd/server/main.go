@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/BrunoCupertino/stock-hollywood/internal"
 	"github.com/anthdm/hollywood/actor"
@@ -17,10 +19,10 @@ func main() {
 
 	broadcaster := e.Spawn(internal.NewBroadcasterActor(), "broadcaster", actor.WithID("singleton"))
 
-	e.SpawnFunc(func(ctx *actor.Context) {
+	subscriber := func(ctx *actor.Context) {
 		switch msg := ctx.Message().(type) {
 		case actor.Started:
-			slog.Info("subscriber actor has been started")
+			slog.Info("subscriber actor has been started", "id", ctx.PID().ID)
 
 			ctx.Send(broadcaster, &internal.QuoteSubscriptionRequest{
 				Ticker: "GOOGL",
@@ -29,13 +31,36 @@ func main() {
 			ctx.Send(broadcaster, &internal.QuoteSubscriptionRequest{
 				Ticker: "APPL",
 			})
-		case *internal.Quote:
-			slog.Info("new quote received", "ticker", msg.Ticker, "px", msg.Px)
 
+			if ctx.PID().ID != "subcriber/1" {
+				for i := range 100 {
+					ctx.Send(broadcaster, &internal.QuoteSubscriptionRequest{
+						Ticker: fmt.Sprintf("TICKER%d", i),
+					})
+				}
+			}
+		case *internal.Quote:
+			if time.Now().UTC().Sub(msg.Date.AsTime()) > time.Millisecond*5 {
+				slog.Info("new quote received",
+					"ticker", msg.Ticker,
+					"px", msg.Px, "id", ctx.PID().ID,
+					"duration", time.Since(msg.Date.AsTime()),
+					"now", time.Now().UTC(),
+					"date", msg.Date.AsTime())
+			}
+			_ = msg
 		case actor.Stopped:
 			slog.Warn("subscriber actor has been stopped")
 		}
-	}, "subcriber", actor.WithID("singleton"))
+	}
+
+	e.SpawnFunc(subscriber, "subcriber", actor.WithID("1"))
+
+	time.Sleep(time.Second * 3)
+
+	for i := range 10 {
+		e.SpawnFunc(subscriber, "subcriber", actor.WithID(fmt.Sprintf("%d", i+2)))
+	}
 
 	select {}
 }

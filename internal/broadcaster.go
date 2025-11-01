@@ -4,12 +4,12 @@ import (
 	"log/slog"
 
 	"github.com/anthdm/hollywood/actor"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type BroadcasterActor struct {
 	quotesActors map[string]*actor.PID
 	subscribers  map[string]map[*actor.PID]struct{}
-	wildcard     map[*actor.PID]struct{}
 }
 
 func (a *BroadcasterActor) Receive(ctx *actor.Context) {
@@ -17,13 +17,8 @@ func (a *BroadcasterActor) Receive(ctx *actor.Context) {
 	case actor.Started:
 		slog.Info("broadcaster actor has been started")
 	case *QuoteSubscriptionRequest:
-		if msg.Ticker == "*" {
-			// todo how to findout all the tickers and spawn their actors?
-			a.wildcard[ctx.Sender()] = struct{}{}
-			return
-		}
-
-		if _, ok := a.quotesActors[msg.Ticker]; !ok {
+		quotePID, ok := a.quotesActors[msg.Ticker]
+		if !ok {
 			pid := ctx.Engine().Registry.GetPID("quote", msg.Ticker)
 			if pid == nil {
 				pid = ctx.Engine().Spawn(NewQuoteActor(msg.Ticker), "quote", actor.WithID(msg.Ticker))
@@ -37,25 +32,38 @@ func (a *BroadcasterActor) Receive(ctx *actor.Context) {
 		if _, ok := a.subscribers[msg.Ticker]; !ok {
 			a.subscribers[msg.Ticker] = make(map[*actor.PID]struct{})
 		}
+
 		a.subscribers[msg.Ticker][ctx.Sender()] = struct{}{}
+
+		ctx.Send(quotePID, &Snapshot{
+			pid: ctx.Sender(),
+		})
 	case *OnQuote:
 		ticker := msg.Ticker
+
+		// now := time.Now()
+
+		// snapshot
+		if msg.PID != nil {
+			ctx.Send(msg.PID, &Quote{
+				Ticker: ticker,
+				Px:     msg.Px,
+				Date:   timestamppb.New(msg.Date),
+			})
+			return
+		}
 
 		for subscriber := range a.subscribers[ticker] {
 			ctx.Send(subscriber, &Quote{
 				Ticker: ticker,
 				Px:     msg.Px,
-				// Date:   msg.Date,
+				Date:   timestamppb.New(msg.Date),
 			})
 		}
 
-		for subscriber := range a.wildcard {
-			ctx.Send(subscriber, &Quote{
-				Ticker: ticker,
-				Px:     msg.Px,
-				// Date:   msg.Date,
-			})
-		}
+		// slog.Info("broadcast broadcaster time",
+		// 	"duration", time.Now().UTC().Sub(msg.Date),
+		// 	"len", len(a.subscribers[ticker]))
 	}
 }
 
@@ -64,7 +72,6 @@ func NewBroadcasterActor() actor.Producer {
 		return &BroadcasterActor{
 			quotesActors: make(map[string]*actor.PID),
 			subscribers:  make(map[string]map[*actor.PID]struct{}),
-			wildcard:     make(map[*actor.PID]struct{}),
 		}
 	}
 }

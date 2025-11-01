@@ -9,6 +9,7 @@ package internal
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -25,6 +26,7 @@ type Quote struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Ticker        string                 `protobuf:"bytes,1,opt,name=ticker,proto3" json:"ticker,omitempty"`
 	Px            float64                `protobuf:"fixed64,2,opt,name=px,proto3" json:"px,omitempty"`
+	Date          *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=date,proto3" json:"date,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -71,6 +73,13 @@ func (x *Quote) GetPx() float64 {
 		return x.Px
 	}
 	return 0
+}
+
+func (x *Quote) GetDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Date
+	}
+	return nil
 }
 
 type QuoteSubscriptionRequest struct {
@@ -261,10 +270,11 @@ var File_message_proto protoreflect.FileDescriptor
 
 const file_message_proto_rawDesc = "" +
 	"\n" +
-	"\rmessage.proto\x12\binternal\"/\n" +
+	"\rmessage.proto\x12\binternal\x1a\x1fgoogle/protobuf/timestamp.proto\"_\n" +
 	"\x05Quote\x12\x16\n" +
 	"\x06ticker\x18\x01 \x01(\tR\x06ticker\x12\x0e\n" +
-	"\x02px\x18\x02 \x01(\x01R\x02px\"2\n" +
+	"\x02px\x18\x02 \x01(\x01R\x02px\x12.\n" +
+	"\x04date\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x04date\"2\n" +
 	"\x18QuoteSubscriptionRequest\x12\x16\n" +
 	"\x06ticker\x18\x01 \x01(\tR\x06ticker\"E\n" +
 	"\x1aQuoteSubscriptionsResponse\x12'\n" +
@@ -294,13 +304,15 @@ var file_message_proto_goTypes = []any{
 	(*QuoteSubscriptionsResponse)(nil),   // 2: internal.QuoteSubscriptionsResponse
 	(*QuoteUnsubscriptionRequest)(nil),   // 3: internal.QuoteUnsubscriptionRequest
 	(*QuoteUnsubscriptionsResponse)(nil), // 4: internal.QuoteUnsubscriptionsResponse
+	(*timestamppb.Timestamp)(nil),        // 5: google.protobuf.Timestamp
 }
 var file_message_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: internal.Quote.date:type_name -> google.protobuf.Timestamp
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_message_proto_init() }

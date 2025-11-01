@@ -32,8 +32,9 @@ func (a *FakeConnectorActor) Receive(ctx *actor.Context) {
 				pid = ctx.Engine().Spawn(NewQuoteActor(t), "quote", actor.WithID(t))
 			}
 			ctx.Send(pid, &OnQuote{
-				Quote: 1.1 + float64(time.Now().UnixMilli()%10),
-				When:  time.Now(),
+				Ticker: t,
+				Px:     1.1 + float64(time.Now().UnixMilli()%10),
+				Date:   time.Now(),
 			})
 		}
 	}

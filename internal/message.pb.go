@@ -23,7 +23,7 @@ const (
 
 type Quote struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Symbol        string                 `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Ticker        string                 `protobuf:"bytes,1,opt,name=ticker,proto3" json:"ticker,omitempty"`
 	Px            float64                `protobuf:"fixed64,2,opt,name=px,proto3" json:"px,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -59,9 +59,9 @@ func (*Quote) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Quote) GetSymbol() string {
+func (x *Quote) GetTicker() string {
 	if x != nil {
-		return x.Symbol
+		return x.Ticker
 	}
 	return ""
 }
@@ -75,7 +75,7 @@ func (x *Quote) GetPx() float64 {
 
 type QuoteSubscriptionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Symbol        string                 `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Ticker        string                 `protobuf:"bytes,1,opt,name=ticker,proto3" json:"ticker,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -110,9 +110,9 @@ func (*QuoteSubscriptionRequest) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *QuoteSubscriptionRequest) GetSymbol() string {
+func (x *QuoteSubscriptionRequest) GetTicker() string {
 	if x != nil {
-		return x.Symbol
+		return x.Ticker
 	}
 	return ""
 }
@@ -163,7 +163,7 @@ func (x *QuoteSubscriptionsResponse) GetSubscriptionId() string {
 
 type QuoteUnsubscriptionRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Symbol         string                 `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Ticker         string                 `protobuf:"bytes,1,opt,name=ticker,proto3" json:"ticker,omitempty"`
 	SubscriptionId string                 `protobuf:"bytes,2,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -199,9 +199,9 @@ func (*QuoteUnsubscriptionRequest) Descriptor() ([]byte, []int) {
 	return file_message_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *QuoteUnsubscriptionRequest) GetSymbol() string {
+func (x *QuoteUnsubscriptionRequest) GetTicker() string {
 	if x != nil {
-		return x.Symbol
+		return x.Ticker
 	}
 	return ""
 }
@@ -263,14 +263,14 @@ const file_message_proto_rawDesc = "" +
 	"\n" +
 	"\rmessage.proto\x12\binternal\"/\n" +
 	"\x05Quote\x12\x16\n" +
-	"\x06symbol\x18\x01 \x01(\tR\x06symbol\x12\x0e\n" +
+	"\x06ticker\x18\x01 \x01(\tR\x06ticker\x12\x0e\n" +
 	"\x02px\x18\x02 \x01(\x01R\x02px\"2\n" +
 	"\x18QuoteSubscriptionRequest\x12\x16\n" +
-	"\x06symbol\x18\x01 \x01(\tR\x06symbol\"E\n" +
+	"\x06ticker\x18\x01 \x01(\tR\x06ticker\"E\n" +
 	"\x1aQuoteSubscriptionsResponse\x12'\n" +
 	"\x0fsubscription_id\x18\x01 \x01(\tR\x0esubscriptionId\"]\n" +
 	"\x1aQuoteUnsubscriptionRequest\x12\x16\n" +
-	"\x06symbol\x18\x01 \x01(\tR\x06symbol\x12'\n" +
+	"\x06ticker\x18\x01 \x01(\tR\x06ticker\x12'\n" +
 	"\x0fsubscription_id\x18\x02 \x01(\tR\x0esubscriptionId\"G\n" +
 	"\x1cQuoteUnsubscriptionsResponse\x12'\n" +
 	"\x0fsubscription_id\x18\x01 \x01(\tR\x0esubscriptionIdB4Z2github.com/BrunoCupertino/stock-hollywood/internalb\x06proto3"

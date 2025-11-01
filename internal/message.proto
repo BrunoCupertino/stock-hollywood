@@ -3,12 +3,12 @@ package internal;
 option go_package = "github.com/BrunoCupertino/stock-hollywood/internal";
 
 message Quote {
-    string symbol = 1;
+    string ticker = 1;
     double px = 2;
 }
 
 message QuoteSubscriptionRequest {
-    string symbol = 1;
+    string ticker = 1;
 } 
 
 message QuoteSubscriptionsResponse {
@@ -16,7 +16,7 @@ message QuoteSubscriptionsResponse {
 }
 
 message QuoteUnsubscriptionRequest {
-    string symbol = 1;
+    string ticker = 1;
     string subscription_id = 2;
 } 
 

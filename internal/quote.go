@@ -9,47 +9,56 @@ import (
 
 type QuoteActor struct {
 	ticker      string
-	quote       float64
-	quotedAt    time.Time
+	px          float64
+	updatedAt   time.Time
 	subscribers map[*actor.PID]struct{}
 }
 
-type Subscription struct {
-	Subscriber *actor.PID
-}
+type Subscription struct{}
 
 type OnQuote struct {
-	Quote float64
-	When  time.Time
+	Ticker string
+	Px     float64
+	Date   time.Time
 }
 
 func (a *QuoteActor) Receive(ctx *actor.Context) {
 	switch msg := ctx.Message().(type) {
 	case actor.Started:
 		slog.Info("quote actor has been started", "ticker", a.ticker)
-		// load last saved state
-	case Subscription:
-		a.subscribers[msg.Subscriber] = struct{}{}
+
+		broadcaster := ctx.Engine().Registry.GetPID("broadcaster", "singleton")
+
+		// todo load the last quote from the database
+		a.px = 1
+		a.updatedAt = time.Now().AddDate(0, 0, -1)
+
+		ctx.Send(broadcaster, &OnQuote{
+			Ticker: a.ticker,
+			Px:     a.px,
+			Date:   a.updatedAt,
+		})
+
+	case *Subscription:
+		a.subscribers[ctx.Sender()] = struct{}{}
 	case *OnQuote:
-		if msg.When.Before(a.quotedAt) {
+		if msg.Date.Before(a.updatedAt) {
 			return
 		}
 
-		a.quote = msg.Quote
-		a.quotedAt = msg.When
+		a.px = msg.Px
+		a.updatedAt = msg.Date
 
 		for s := range a.subscribers {
-			ctx.Send(s, msg)
+			ctx.Forward(s)
 		}
-
-		slog.Info("quote broadcasted", "ticker", a.ticker, "quote", a.quote)
 	}
 }
 
-func NewQuoteActor(ticker string) actor.Producer {
+func NewQuoteActor(t string) actor.Producer {
 	return func() actor.Receiver {
 		return &QuoteActor{
-			ticker:      ticker,
+			ticker:      t,
 			subscribers: make(map[*actor.PID]struct{}),
 		}
 	}

@@ -68,7 +68,7 @@ func NewFakeConnectorActor() actor.Producer {
 		return &FakeConnectorActor{
 			tickers: tickers,
 			// tickers:  []string{"GOOGL", "APPL", "A", "B", "C", "D", "E", "F", "G", "H"},
-			internal: time.Millisecond * 50,
+			internal: time.Millisecond * 500,
 		}
 	}
 }

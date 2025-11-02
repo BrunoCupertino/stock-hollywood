@@ -16,6 +16,7 @@ func main() {
 	port := flag.String("port", ":3000", "port")
 	flag.Parse()
 
+	// r := remote.New(*port, remote.NewConfig().WithBufferSize(1024*8))
 	r := remote.New(*port, remote.NewConfig())
 	e, err := actor.NewEngine(actor.NewEngineConfig().WithRemote(r))
 	if err != nil {
@@ -39,13 +40,11 @@ func main() {
 				Ticker: "APPL",
 			})
 
-			// if ctx.PID().ID != "subcriber/1" {
-			for i := range 35_000 {
+			for i := range 3_000 - 2 {
 				ctx.Send(remoteBroadcaster, &internal.QuoteSubscriptionRequest{
 					Ticker: fmt.Sprintf("TICKER%d", i),
 				})
 			}
-			// }
 		case *internal.Quote:
 			if time.Now().UTC().Sub(msg.Date.AsTime()) > time.Millisecond*5 {
 				slog.Info("new quote received",
@@ -68,7 +67,7 @@ func main() {
 		}
 	}
 
-	e.SpawnFunc(subscriber, "subcriber", actor.WithID("1"))
+	e.SpawnFunc(subscriber, "subcriber", actor.WithID("singleton"))
 
 	select {}
 }

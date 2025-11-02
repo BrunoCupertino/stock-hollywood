@@ -39,6 +39,8 @@ func (a *BroadcasterActor) Receive(ctx *actor.Context) {
 		ctx.Send(quotePID, &Snapshot{
 			pid: ctx.Sender(),
 		})
+
+		slog.Info("subscription made for", "id", ctx.Sender().ID)
 	case *OnQuote:
 		ticker := msg.Ticker
 

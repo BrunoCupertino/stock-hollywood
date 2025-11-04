@@ -45,8 +45,8 @@ func (a *FakeConnectorActor) Receive(ctx *actor.Context) {
 			})
 		}
 
-		if a.ticksPublished%1_000 == 0 {
-			slog.Info("1k ticks published")
+		if a.ticksPublished%10_000 == 0 {
+			slog.Info("10k ticks published")
 		}
 
 		// slog.Info("broadcast publisher time", "duration", time.Since(now))
@@ -55,14 +55,14 @@ func (a *FakeConnectorActor) Receive(ctx *actor.Context) {
 }
 
 func NewFakeConnectorActor() actor.Producer {
-	const tickersNum = 3_000
+	const tickersNum = 35_000
 	return func() actor.Receiver {
 		tickers := make([]string, 0, tickersNum)
 
 		tickers = append(tickers, "APPL")
 		tickers = append(tickers, "GOOGL")
 
-		for i := range tickersNum - 2 {
+		for i := range tickersNum + 2 {
 			tickers = append(tickers, fmt.Sprintf("TICKER%d", i))
 		}
 

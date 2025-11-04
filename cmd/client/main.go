@@ -40,7 +40,7 @@ func main() {
 				Ticker: "APPL",
 			})
 
-			for i := range 3_000 - 2 {
+			for i := range 3_000 + 2 {
 				ctx.Send(remoteBroadcaster, &internal.QuoteSubscriptionRequest{
 					Ticker: fmt.Sprintf("TICKER%d", i),
 				})
@@ -60,8 +60,26 @@ func main() {
 			if atomic.LoadInt64(&quoteReceived)%1_000 == 0 {
 				slog.Info("1k quotes received from server")
 			}
-
 			_ = msg
+
+		case *internal.QuoteBatch:
+			for _, q := range msg.Quotes {
+				if time.Now().UTC().Sub(q.Date.AsTime()) > time.Millisecond*5 {
+					slog.Info("new quote received",
+						"ticker", q.Ticker,
+						"px", q.Px, "id", ctx.PID().ID,
+						"duration", time.Since(q.Date.AsTime()),
+						"now", time.Now().UTC(),
+						"date", q.Date.AsTime())
+				}
+
+				atomic.AddInt64(&quoteReceived, 1)
+
+				if atomic.LoadInt64(&quoteReceived)%1_000 == 0 {
+					slog.Info("1k quotes received from server")
+				}
+				_ = msg
+			}
 		case actor.Stopped:
 			slog.Warn("subscriber actor has been stopped")
 		}

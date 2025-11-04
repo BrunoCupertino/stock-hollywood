@@ -82,6 +82,50 @@ func (x *Quote) GetDate() *timestamppb.Timestamp {
 	return nil
 }
 
+type QuoteBatch struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Quotes        []*Quote               `protobuf:"bytes,1,rep,name=quotes,proto3" json:"quotes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *QuoteBatch) Reset() {
+	*x = QuoteBatch{}
+	mi := &file_message_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QuoteBatch) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QuoteBatch) ProtoMessage() {}
+
+func (x *QuoteBatch) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QuoteBatch.ProtoReflect.Descriptor instead.
+func (*QuoteBatch) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *QuoteBatch) GetQuotes() []*Quote {
+	if x != nil {
+		return x.Quotes
+	}
+	return nil
+}
+
 type QuoteSubscriptionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Ticker        string                 `protobuf:"bytes,1,opt,name=ticker,proto3" json:"ticker,omitempty"`
@@ -91,7 +135,7 @@ type QuoteSubscriptionRequest struct {
 
 func (x *QuoteSubscriptionRequest) Reset() {
 	*x = QuoteSubscriptionRequest{}
-	mi := &file_message_proto_msgTypes[1]
+	mi := &file_message_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -103,7 +147,7 @@ func (x *QuoteSubscriptionRequest) String() string {
 func (*QuoteSubscriptionRequest) ProtoMessage() {}
 
 func (x *QuoteSubscriptionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[1]
+	mi := &file_message_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +160,7 @@ func (x *QuoteSubscriptionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuoteSubscriptionRequest.ProtoReflect.Descriptor instead.
 func (*QuoteSubscriptionRequest) Descriptor() ([]byte, []int) {
-	return file_message_proto_rawDescGZIP(), []int{1}
+	return file_message_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *QuoteSubscriptionRequest) GetTicker() string {
@@ -135,7 +179,7 @@ type QuoteSubscriptionsResponse struct {
 
 func (x *QuoteSubscriptionsResponse) Reset() {
 	*x = QuoteSubscriptionsResponse{}
-	mi := &file_message_proto_msgTypes[2]
+	mi := &file_message_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -147,7 +191,7 @@ func (x *QuoteSubscriptionsResponse) String() string {
 func (*QuoteSubscriptionsResponse) ProtoMessage() {}
 
 func (x *QuoteSubscriptionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[2]
+	mi := &file_message_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -160,7 +204,7 @@ func (x *QuoteSubscriptionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuoteSubscriptionsResponse.ProtoReflect.Descriptor instead.
 func (*QuoteSubscriptionsResponse) Descriptor() ([]byte, []int) {
-	return file_message_proto_rawDescGZIP(), []int{2}
+	return file_message_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *QuoteSubscriptionsResponse) GetSubscriptionId() string {
@@ -180,7 +224,7 @@ type QuoteUnsubscriptionRequest struct {
 
 func (x *QuoteUnsubscriptionRequest) Reset() {
 	*x = QuoteUnsubscriptionRequest{}
-	mi := &file_message_proto_msgTypes[3]
+	mi := &file_message_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -192,7 +236,7 @@ func (x *QuoteUnsubscriptionRequest) String() string {
 func (*QuoteUnsubscriptionRequest) ProtoMessage() {}
 
 func (x *QuoteUnsubscriptionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[3]
+	mi := &file_message_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -205,7 +249,7 @@ func (x *QuoteUnsubscriptionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuoteUnsubscriptionRequest.ProtoReflect.Descriptor instead.
 func (*QuoteUnsubscriptionRequest) Descriptor() ([]byte, []int) {
-	return file_message_proto_rawDescGZIP(), []int{3}
+	return file_message_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *QuoteUnsubscriptionRequest) GetTicker() string {
@@ -231,7 +275,7 @@ type QuoteUnsubscriptionsResponse struct {
 
 func (x *QuoteUnsubscriptionsResponse) Reset() {
 	*x = QuoteUnsubscriptionsResponse{}
-	mi := &file_message_proto_msgTypes[4]
+	mi := &file_message_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -243,7 +287,7 @@ func (x *QuoteUnsubscriptionsResponse) String() string {
 func (*QuoteUnsubscriptionsResponse) ProtoMessage() {}
 
 func (x *QuoteUnsubscriptionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[4]
+	mi := &file_message_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -256,7 +300,7 @@ func (x *QuoteUnsubscriptionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuoteUnsubscriptionsResponse.ProtoReflect.Descriptor instead.
 func (*QuoteUnsubscriptionsResponse) Descriptor() ([]byte, []int) {
-	return file_message_proto_rawDescGZIP(), []int{4}
+	return file_message_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *QuoteUnsubscriptionsResponse) GetSubscriptionId() string {
@@ -274,7 +318,10 @@ const file_message_proto_rawDesc = "" +
 	"\x05Quote\x12\x16\n" +
 	"\x06ticker\x18\x01 \x01(\tR\x06ticker\x12\x0e\n" +
 	"\x02px\x18\x02 \x01(\x01R\x02px\x12.\n" +
-	"\x04date\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x04date\"2\n" +
+	"\x04date\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x04date\"5\n" +
+	"\n" +
+	"QuoteBatch\x12'\n" +
+	"\x06quotes\x18\x01 \x03(\v2\x0f.internal.QuoteR\x06quotes\"2\n" +
 	"\x18QuoteSubscriptionRequest\x12\x16\n" +
 	"\x06ticker\x18\x01 \x01(\tR\x06ticker\"E\n" +
 	"\x1aQuoteSubscriptionsResponse\x12'\n" +
@@ -297,22 +344,24 @@ func file_message_proto_rawDescGZIP() []byte {
 	return file_message_proto_rawDescData
 }
 
-var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_message_proto_goTypes = []any{
 	(*Quote)(nil),                        // 0: internal.Quote
-	(*QuoteSubscriptionRequest)(nil),     // 1: internal.QuoteSubscriptionRequest
-	(*QuoteSubscriptionsResponse)(nil),   // 2: internal.QuoteSubscriptionsResponse
-	(*QuoteUnsubscriptionRequest)(nil),   // 3: internal.QuoteUnsubscriptionRequest
-	(*QuoteUnsubscriptionsResponse)(nil), // 4: internal.QuoteUnsubscriptionsResponse
-	(*timestamppb.Timestamp)(nil),        // 5: google.protobuf.Timestamp
+	(*QuoteBatch)(nil),                   // 1: internal.QuoteBatch
+	(*QuoteSubscriptionRequest)(nil),     // 2: internal.QuoteSubscriptionRequest
+	(*QuoteSubscriptionsResponse)(nil),   // 3: internal.QuoteSubscriptionsResponse
+	(*QuoteUnsubscriptionRequest)(nil),   // 4: internal.QuoteUnsubscriptionRequest
+	(*QuoteUnsubscriptionsResponse)(nil), // 5: internal.QuoteUnsubscriptionsResponse
+	(*timestamppb.Timestamp)(nil),        // 6: google.protobuf.Timestamp
 }
 var file_message_proto_depIdxs = []int32{
-	5, // 0: internal.Quote.date:type_name -> google.protobuf.Timestamp
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: internal.Quote.date:type_name -> google.protobuf.Timestamp
+	0, // 1: internal.QuoteBatch.quotes:type_name -> internal.Quote
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_message_proto_init() }
@@ -326,7 +375,7 @@ func file_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_proto_rawDesc), len(file_message_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

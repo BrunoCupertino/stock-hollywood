@@ -8,9 +8,12 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+const batchSize = 100
+
 type BroadcasterActor struct {
 	quotesActors map[string]*actor.PID
 	subscribers  map[string]map[*actor.PID]struct{}
+	batch        []*Quote
 }
 
 func (a *BroadcasterActor) Receive(ctx *actor.Context) {
@@ -56,13 +59,28 @@ func (a *BroadcasterActor) Receive(ctx *actor.Context) {
 			return
 		}
 
-		for subscriber := range a.subscribers[ticker] {
-			ctx.Send(subscriber, &Quote{
-				Ticker: ticker,
-				Px:     msg.Px,
-				Date:   timestamppb.New(msg.Date),
-			})
+		a.batch = append(a.batch, &Quote{
+			Ticker: ticker,
+			Px:     msg.Px,
+			Date:   timestamppb.New(msg.Date),
+		})
+
+		if len(a.batch) == batchSize {
+			for subscriber := range a.subscribers[ticker] {
+				ctx.Send(subscriber, &QuoteBatch{
+					Quotes: a.batch,
+				})
+			}
+			a.batch = a.batch[:0]
 		}
+
+		// for subscriber := range a.subscribers[ticker] {
+		// 	ctx.Send(subscriber, &Quote{
+		// 		Ticker: ticker,
+		// 		Px:     msg.Px,
+		// 		Date:   timestamppb.New(msg.Date),
+		// 	})
+		// }
 
 		slog.Info("broadcast broadcaster time",
 			"duration", time.Now().UTC().Sub(msg.Date),
@@ -75,6 +93,7 @@ func NewBroadcasterActor() actor.Producer {
 		return &BroadcasterActor{
 			quotesActors: make(map[string]*actor.PID),
 			subscribers:  make(map[string]map[*actor.PID]struct{}),
+			batch:        make([]*Quote, 0, batchSize),
 		}
 	}
 }

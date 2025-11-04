@@ -10,6 +10,10 @@ message Quote {
     google.protobuf.Timestamp date = 3;
 }
 
+message QuoteBatch {
+    repeated Quote quotes = 1;
+}
+
 message QuoteSubscriptionRequest {
     string ticker = 1;
 } 

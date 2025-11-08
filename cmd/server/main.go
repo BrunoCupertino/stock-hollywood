@@ -17,6 +17,7 @@ func main() {
 
 	_ = e.Spawn(internal.NewFakeConnectorActor(), "connector", actor.WithID("fake"))
 
+	// todo: broadcaster by consumer
 	_ = e.Spawn(internal.NewBroadcasterActor(), "broadcaster", actor.WithID("singleton"))
 
 	select {}

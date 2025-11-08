@@ -2,7 +2,6 @@ package internal
 
 import (
 	"log/slog"
-	"time"
 
 	"github.com/anthdm/hollywood/actor"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -82,9 +81,9 @@ func (a *BroadcasterActor) Receive(ctx *actor.Context) {
 		// 	})
 		// }
 
-		slog.Info("broadcast broadcaster time",
-			"duration", time.Now().UTC().Sub(msg.Date),
-			"len", len(a.subscribers[ticker]))
+		// slog.Info("broadcast broadcaster time",
+		// 	"duration", time.Now().UTC().Sub(msg.Date),
+		// 	"len", len(a.subscribers[ticker]))
 	}
 }
 

@@ -8,6 +8,8 @@ import (
 	"github.com/anthdm/hollywood/actor"
 )
 
+const TickersNum = 100_000
+
 type FakeConnectorActor struct {
 	ticksPublished int64
 	tickers        []string
@@ -28,7 +30,7 @@ func (a *FakeConnectorActor) Receive(ctx *actor.Context) {
 		a.repeater = ctx.Engine().SendRepeat(a.me, &RefreshQuotes{}, a.internal)
 
 	case *RefreshQuotes:
-		// now := time.Now()
+		now := time.Now().UTC()
 
 		for _, t := range a.tickers {
 			pid := ctx.Engine().Registry.GetPID("quote", t)
@@ -38,16 +40,24 @@ func (a *FakeConnectorActor) Receive(ctx *actor.Context) {
 
 			a.ticksPublished++
 
-			ctx.Send(pid, &OnQuote{
+			q := &OnQuote{
 				Ticker: t,
 				Px:     1.1 + float64(time.Now().UnixMilli()%10),
 				Date:   time.Now().UTC(),
-			})
+			}
+
+			if t == "LAST" {
+				q.Date = now
+			}
+
+			ctx.Send(pid, q)
+
+			if a.ticksPublished%100_000 == 0 {
+				slog.Info("100k ticks published")
+			}
 		}
 
-		if a.ticksPublished%10_000 == 0 {
-			slog.Info("10k ticks published")
-		}
+		// a.repeater.Stop()
 
 		// slog.Info("broadcast publisher time", "duration", time.Since(now))
 	}
@@ -55,21 +65,21 @@ func (a *FakeConnectorActor) Receive(ctx *actor.Context) {
 }
 
 func NewFakeConnectorActor() actor.Producer {
-	const tickersNum = 35_000
 	return func() actor.Receiver {
-		tickers := make([]string, 0, tickersNum)
+		tickers := make([]string, 0, TickersNum+3)
 
 		tickers = append(tickers, "APPL")
 		tickers = append(tickers, "GOOGL")
 
-		for i := range tickersNum + 2 {
+		for i := range TickersNum + 2 {
 			tickers = append(tickers, fmt.Sprintf("TICKER%d", i))
 		}
 
+		tickers = append(tickers, "LAST")
+
 		return &FakeConnectorActor{
-			tickers: tickers,
-			// tickers:  []string{"GOOGL", "APPL", "A", "B", "C", "D", "E", "F", "G", "H"},
-			internal: time.Millisecond * 500,
+			tickers:  tickers,
+			internal: time.Second * 1,
 		}
 	}
 }
